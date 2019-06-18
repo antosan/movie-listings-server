@@ -10,6 +10,9 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME
 });
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 app.get("/api/cinemas", (req, res) => {
     // Fetch movies from the database
     pool.query("SELECT id, name FROM cinema", (error, rows) => {
@@ -31,6 +34,27 @@ app.get("/api/cinemas/:id", (req, res) => {
             }
 
             res.json(rows);
+        }
+    );
+});
+
+app.post("/api/cinemas", (req, res) => {
+    const { name } = req.body;
+
+    if (name === "") {
+        return res.status(400).json({ error: "Invalid payload" });
+    }
+
+    // Insert name to the database
+    pool.query(
+        "INSERT INTO cinema (name) VALUES (?)",
+        [name],
+        (error, results) => {
+            if (error) {
+                return res.status(500).json({ error });
+            }
+
+            res.json(results.insertId);
         }
     );
 });
