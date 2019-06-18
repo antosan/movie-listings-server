@@ -59,6 +59,27 @@ app.post("/api/cinemas", (req, res) => {
     );
 });
 
+app.put("/api/cinemas/:id", (req, res) => {
+    const { name } = req.body;
+
+    if (!name) {
+        return res.status(400).json({ error: "Invalid payload" });
+    }
+
+    // Update the cinema in the database
+    pool.query(
+        "UPDATE cinema SET name = ? WHERE id = ?",
+        [name, req.params.id],
+        (error, results) => {
+            if (error) {
+                return res.status(500).json({ error });
+            }
+
+            res.json(results.changedRows);
+        }
+    );
+});
+
 app.listen(9000, function() {
     console.log("App listening on port 9000");
 });
