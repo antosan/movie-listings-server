@@ -10,6 +10,7 @@
   "author": "Antony Sande <sandeantony@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "concurrently": "^4.1.0",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
     "mysql": "^2.17.1"
