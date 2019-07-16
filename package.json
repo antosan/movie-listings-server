@@ -12,6 +12,7 @@
   "author": "Antony Sande <sandeantony@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "@reach/router": "^1.2.1",
     "concurrently": "^4.1.0",
     "dotenv": "^8.0.0",
     "express": "^4.16.4",
