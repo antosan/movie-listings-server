@@ -1,6 +1,8 @@
 import React from "react";
 import axios from "axios";
 import Movie from "./Movie";
+import Loading from "./Loading";
+import Error from "./Error";
 
 class MovieList extends React.Component {
     constructor(props) {
@@ -44,11 +46,11 @@ class MovieList extends React.Component {
         const { moviesShowing, loading, error } = this.state;
 
         if (loading) {
-            return <h1>Loading...</h1>;
+            return <Loading />;
         }
 
         if (error) {
-            return <h1>Something went wrong...</h1>;
+            return <Error />;
         }
 
         return (
