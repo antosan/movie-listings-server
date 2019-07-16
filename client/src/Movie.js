@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "@reach/router";
 
 function Movie({ movieShowing }) {
     const { id, title, cinema_count, poster_url } = movieShowing;
@@ -20,9 +21,9 @@ function Movie({ movieShowing }) {
                 <p className="mvls-cinema-count">{cinemaText}</p>
             </div>
             <div className="mvls-movie-footer">
-                <a href={`/movie/${id}`} className="mvls-btn mvls-btn-cinemas">
+                <Link to={`/movie/${id}`} className="mvls-btn mvls-btn-cinemas">
                     See Cinemas
-                </a>
+                </Link>
             </div>
         </div>
     );

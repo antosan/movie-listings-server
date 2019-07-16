@@ -119,3 +119,7 @@
         font-size: 1.875rem;
     }
 }
+
+.mvls-nav a.mvls-active {
+    color: #00ff00;
+}
