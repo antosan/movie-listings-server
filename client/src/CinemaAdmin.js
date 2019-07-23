@@ -7,7 +7,8 @@ class CinemaAdmin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: ""
+            name: "",
+            validationErrors: {}
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
@@ -22,23 +23,51 @@ class CinemaAdmin extends React.Component {
         });
     }
 
+    validateFormInput(data) {
+        const validationErrors = {};
+        const { name } = data;
+
+        if (!name) {
+            validationErrors.name = "This field is required";
+        }
+
+        return {
+            validationErrors,
+            isValid: Object.keys(validationErrors).length === 0
+        };
+    }
+
+    isValid() {
+        const { validationErrors, isValid } = this.validateFormInput(
+            this.state
+        );
+
+        if (!isValid) {
+            this.setState({ validationErrors });
+        }
+
+        return isValid;
+    }
+
     handleSubmit(e) {
         e.preventDefault();
 
         const { name } = this.state;
 
-        axios
-            .post("/api/cinemas", { name })
-            .then(response => {
-                console.log(response.data);
-            })
-            .catch(error => {
-                console.error(error);
-            });
+        if (this.isValid()) {
+            axios
+                .post("/api/cinemas", { name })
+                .then(response => {
+                    console.log(response.data);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     }
 
     render() {
-        const { name } = this.state;
+        const { name, validationErrors } = this.state;
 
         return (
             <div className="mvls-cinema-admin">
@@ -46,6 +75,7 @@ class CinemaAdmin extends React.Component {
                 <h3>Add Cinema</h3>
                 <CinemaForm
                     name={name}
+                    validationErrors={validationErrors}
                     handleNameChange={this.handleNameChange}
                     handleSubmit={this.handleSubmit}
                 />
