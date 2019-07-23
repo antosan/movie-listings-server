@@ -8,6 +8,10 @@ class CinemaAdmin extends React.Component {
         super(props);
         this.state = {
             name: "",
+            editing: false,
+            formSubmitting: false,
+            formSuccess: false,
+            formError: false,
             validationErrors: {},
             cinemas: [],
             tableLoading: false,
@@ -16,6 +20,7 @@ class CinemaAdmin extends React.Component {
 
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleEditCinema = this.handleEditCinema.bind(this);
     }
 
     componentDidMount() {
@@ -42,8 +47,19 @@ class CinemaAdmin extends React.Component {
                     cinemas: [],
                     tableLoading: false,
                     tableError: true
-                })
+                });
             });
+    }
+
+    resetFormState() {
+        this.setState({
+            name: "",
+            editing: false,
+            formSubmitting: false,
+            formSuccess: false,
+            formError: false,
+            validationErrors: {}
+        })
     }
 
     handleNameChange(e) {
@@ -52,6 +68,12 @@ class CinemaAdmin extends React.Component {
         this.setState({
             name: e.target.value
         });
+    }
+
+    handleEditCinema(cinema) {
+        return () => {
+            this.setState({ ...cinema, editing: true });
+        };
     }
 
     validateFormInput(data) {
@@ -83,27 +105,64 @@ class CinemaAdmin extends React.Component {
     handleSubmit(e) {
         e.preventDefault();
 
-        const { name } = this.state;
+        const { name, editing, id, cinemas } = this.state;
 
         if (this.isValid()) {
-            axios
-                .post("/api/cinemas", { name })
-                .then(response => {
-                    console.log(response.data);
-                })
-                .catch(error => {
-                    console.error(error);
-                });
+            if (editing) {
+                // Existing record - update
+                axios
+                    .put(`/api/cinemas/${id}`, { name })
+                    .then(response => {
+                        this.resetFormState();
+
+                        const index = cinemas.findIndex(c => c.id === id)
+
+                        this.setState({
+                            formSuccess: true,
+                            cinemas: [
+                                ...cinemas.slice(0, index),
+                                { id, name },
+                                ...cinemas.slice(index + 1)
+                            ]
+                        })
+                    })
+                    .catch(error => {
+                        this.setState({
+                            validationErrors: {},
+                            formSubmitting: false,
+                            formSuccess: false,
+                            formError: true
+                        })
+                    });
+            } else {
+                // New record - insert
+                axios
+                    .post("/api/cinemas", { name })
+                    .then(response => {
+                        console.log(response.data);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
         }
     }
 
     render() {
-        const { name, validationErrors, cinemas, tableLoading, tableError } = this.state;
+        const {
+            name,
+            editing,
+            validationErrors,
+            cinemas,
+            tableLoading,
+            tableError
+        } = this.state;
+        console.log(cinemas);
 
         return (
             <div className="mvls-cinema-admin">
                 <h1>Cinemas</h1>
-                <h3>Add Cinema</h3>
+                <h3>{editing ? "Edit Cinema" : "Add Cinema"}</h3>
                 <CinemaForm
                     name={name}
                     validationErrors={validationErrors}
@@ -114,6 +173,7 @@ class CinemaAdmin extends React.Component {
                     cinemas={cinemas}
                     tableLoading={tableLoading}
                     tableError={tableError}
+                    onEditCinema={this.handleEditCinema}
                 />
             </div>
         );

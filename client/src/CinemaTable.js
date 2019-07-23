@@ -1,6 +1,6 @@
 import React from "react";
 
-function CinemaTable({ cinemas, tableLoading, tableError }) {
+function CinemaTable({ cinemas, tableLoading, tableError, onEditCinema }) {
     if (tableLoading) {
         return <p className="mvls-table-loading">Loading cinemas...</p>;
     }
@@ -39,9 +39,16 @@ function CinemaTable({ cinemas, tableLoading, tableError }) {
                                     <td>{index + 1}</td>
                                     <td>{name}</td>
                                     <td>
-                                        <span>Edit</span>
+                                        <span
+                                            className="mvls-table-link"
+                                            onClick={onEditCinema(cinema)}
+                                        >
+                                            Edit
+                                        </span>
                                         &nbsp;&nbsp;|&nbsp;&nbsp;
-                                        <span>Delete</span>
+                                        <span className="mvls-table-link">
+                                            Delete
+                                        </span>
                                     </td>
                                 </tr>
                             );
