@@ -43,7 +43,7 @@ class CinemaAdmin extends React.Component {
         return (
             <div className="mvls-cinema-admin">
                 <h1>Cinemas</h1>
-                <h3>Add Cinema {name}</h3>
+                <h3>Add Cinema</h3>
                 <CinemaForm
                     name={name}
                     handleNameChange={this.handleNameChange}
