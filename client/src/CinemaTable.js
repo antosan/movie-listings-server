@@ -1,7 +1,56 @@
 import React from "react";
 
-function CinemaTable() {
-    return <h2>CinemaTable</h2>;
+function CinemaTable({ cinemas, tableLoading, tableError }) {
+    if (tableLoading) {
+        return <p className="mvls-table-loading">Loading cinemas...</p>;
+    }
+
+    return (
+        <div className="mvls-table">
+            {tableError && (
+                <p className="mvls-alert mvls-alert-error">
+                    Sorry, a server error occurred. Please retry.
+                </p>
+            )}
+            <table>
+                <thead>
+                    <tr>
+                        <td>No</td>
+                        <td>Name</td>
+                        <td>Action</td>
+                    </tr>
+                </thead>
+                {cinemas.length === 0 && (
+                    <tbody>
+                        <tr>
+                            <td colSpan="3" className="mvls-no-data">
+                                No data
+                            </td>
+                        </tr>
+                    </tbody>
+                )}
+                {cinemas.length > 0 && (
+                    <tbody>
+                        {cinemas.map((cinema, index) => {
+                            const { id, name } = cinema;
+
+                            return (
+                                <tr key={id}>
+                                    <td>{index + 1}</td>
+                                    <td>{name}</td>
+                                    <td>
+                                        <span>Edit</span>
+                                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                                        <span>Delete</span>
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                )}
+            </table>
+        </div>
+    );
 }
 
 export default CinemaTable;

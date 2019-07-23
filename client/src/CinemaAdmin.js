@@ -8,11 +8,42 @@ class CinemaAdmin extends React.Component {
         super(props);
         this.state = {
             name: "",
-            validationErrors: {}
+            validationErrors: {},
+            cinemas: [],
+            tableLoading: false,
+            tableError: false
         };
 
         this.handleNameChange = this.handleNameChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount() {
+        this.fetchCinemas();
+    }
+
+    fetchCinemas() {
+        this.setState({
+            tableLoading: true,
+            tableError: false
+        });
+
+        axios
+            .get("/api/cinemas")
+            .then(response => {
+                this.setState({
+                    cinemas: response.data,
+                    tableLoading: false,
+                    tableError: false
+                });
+            })
+            .catch(error => {
+                this.setState({
+                    cinemas: [],
+                    tableLoading: false,
+                    tableError: true
+                })
+            });
     }
 
     handleNameChange(e) {
@@ -67,7 +98,7 @@ class CinemaAdmin extends React.Component {
     }
 
     render() {
-        const { name, validationErrors } = this.state;
+        const { name, validationErrors, cinemas, tableLoading, tableError } = this.state;
 
         return (
             <div className="mvls-cinema-admin">
@@ -79,7 +110,11 @@ class CinemaAdmin extends React.Component {
                     handleNameChange={this.handleNameChange}
                     handleSubmit={this.handleSubmit}
                 />
-                <CinemaTable />
+                <CinemaTable
+                    cinemas={cinemas}
+                    tableLoading={tableLoading}
+                    tableError={tableError}
+                />
             </div>
         );
     }
